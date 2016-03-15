@@ -1,7 +1,7 @@
 // The contents of the tape.
-var tape = []
+var tape = [];
 // The current position of the machine on the tape.
-var pos = 0
+var pos = 0;
 // The current state;
 var state = b;
 
@@ -21,8 +21,8 @@ function erase() {
 }
 
 // Returns true iff the current cell is blank.
-function blank(i) {
-	return typeof(tape[i]) == 'undefined' ? true : false;
+function blank() {
+	return typeof(tape[pos]) == 'undefined' ? true : false;
 }
 
 // State.
@@ -62,7 +62,7 @@ function q() {
 		pos++
 		state = q;
 	}
-	else if (blank(pos)) {
+	else if (blank()) {
 		write('1');
 		pos--;
 		state = p;
@@ -107,8 +107,8 @@ function f() {
 function tapestr() {
 	conts = [];
 	for (var i = 0; i < tape.length; i++)
-		conts[i] = (blank(i) ? '_' : tape[i]);
-
+		conts[i] = ((typeof(tape[i]) == 'undefined') ? '_' : tape[i]);
+	conts = conts.slice(0, pos).concat([state.prototype.constructor.name]).concat(conts.slice(pos));
 	return conts.join('');
 }
 
