@@ -2,52 +2,55 @@
 var tape = [];
 // The current position of the machine on the tape.
 var pos = 0;
-// The current state;
+// The current state.
 var state = b;
 
-// Writes a symbol to the current cell on the tape.
+// The blank symbol.
+var blank = undefined;
+
+// Write symbol sym to the current cell on the tape.
 function write(sym) {
 	tape[pos] = sym;
 }
 
-// Returns true iff the symbol in the current cell is sym.
+// Return true iff the symbol in the current cell is sym.
 function read(sym) {
 	return sym == tape[pos] ? true : false;
 }
 
-// Erases the symbol in the current cell of the tape.
-function erase() {
-	delete tape[pos];
+// Move the machine head right.
+function right() {
+	pos++;
 }
 
-// Returns true iff the current cell is blank.
-function blank() {
-	return typeof(tape[pos]) == 'undefined' ? true : false;
+// Move the machine head left.
+function left() {
+	pos--;
 }
 
-// State.
+// State b.
 function b() {
 	write('e');
-	pos++;
+	right();
 	write('e');
-	pos++;
+	right();
 	write('0');
-	pos++;
-	pos++;
+	right();
+	right();
 	write('0');
-	pos--;
-	pos--;
+	left();
+	left();
 	state = o;
 }
 
-// State.
+// State o.
 function o() {
 	if (read('1')) {
-		pos++;
+		right();
 		write('x');
-		pos--;
-		pos--;
-		pos--;
+		left();
+		left();
+		left();
 		state = o;
 	}
 	else if (read('0')) {
@@ -55,64 +58,69 @@ function o() {
 	}
 }
 
-// State.
+// State q.
 function q() {
 	if (read('0') || read('1')) {
-		pos++;
-		pos++
+		right();
+		right();
 		state = q;
 	}
-	else if (blank()) {
+	else if (read(blank)) {
 		write('1');
-		pos--;
+		left();
 		state = p;
 	}
 }
 
-// State.
+// State p.
 function p() {
 	if (read('x')) {
-		erase();
-		pos++;
+		write(blank);
+		right();
 		state = q;
 	}
 	else if (read('e')) {
-		pos++
+		right();
 		state = f;
 	}
-	else if (blank()) {
-		pos--;
-		pos--;
+	else if (read(blank)) {
+		left();
+		left();
 		state = p;
 	}
 }
 
-// State.
+// State f.
 function f() {
-	if (read('0') || read('1')) {
-		pos++;
-		pos++;
-		state = f;
-	}
-	else if (blank()) {
+	if (read(blank)) {
 		write('0');
-		pos--;
-		pos--;
+		left();
+		left();
 		state = o;
 	}
+	else {
+		right();
+		right();
+		state = f;
+	}
 }
 
-// Returns a string representing the tape.
-// Uses '_' for blank.
+// Returns a string representing the tape and state, using '_' for blank.
 function tapestr() {
-	conts = [];
-	for (var i = 0; i < tape.length; i++)
-		conts[i] = ((typeof(tape[i]) == 'undefined') ? '_' : tape[i]);
-	conts = conts.slice(0, pos).concat([state.prototype.constructor.name]).concat(conts.slice(pos));
-	return conts.join('');
+	var conts = [];
+	for (var i = 0; i < Math.max(tape.length + 1, pos + 1); i++)
+		conts[i] = ((tape[i] == undefined) ? '_' : tape[i]);
+	conts = conts.join('');
+	conts = conts.slice(0, pos) + state.prototype.constructor.name + conts.slice(pos);
+	return conts;
 }
 
-for (var i = 0; i < 1000; i++) {
+// Print the initial tape string.
+console.log(tapestr());
+// Run the machine through a number of state table lookups.
+for (var i = 0; i < 300; i++) {
+	// Apply the transition function for the current state and symbol.
 	state();
+	// Print the tape string.
 	console.log(tapestr());
 }
