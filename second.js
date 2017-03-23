@@ -13,9 +13,9 @@ function write(sym) {
 	tape[pos] = sym;
 }
 
-// Return true iff the symbol in the current cell is sym.
-function read(sym) {
-	return sym == tape[pos] ? true : false;
+// Read the symbol under the macgine head.
+function read() {
+	return tape[pos];
 }
 
 // Move the machine head right.
@@ -45,63 +45,72 @@ function b() {
 
 // State o.
 function o() {
-	if (read('1')) {
-		right();
-		write('x');
-		left();
-		left();
-		left();
-		state = o;
-	}
-	else if (read('0')) {
-		state = q;
+  switch (read()) {
+	  case '1':
+		  right();
+	  	write('x');
+		  left();
+		  left();
+		  left();
+		  state = o;
+      break;
+    case '0':
+		  state = q;
+      break;
 	}
 }
 
 // State q.
 function q() {
-	if (read('0') || read('1')) {
-		right();
-		right();
-		state = q;
-	}
-	else if (read(blank)) {
-		write('1');
-		left();
-		state = p;
-	}
+	switch (read()) {
+    case '0':
+    case '1':
+		  right();
+		  right();
+		  state = q;
+	    break;
+    case blank:
+      write('1');
+		  left();
+		  state = p;
+	    break;
+  }
 }
 
 // State p.
 function p() {
-	if (read('x')) {
-		write(blank);
-		right();
-		state = q;
-	}
-	else if (read('e')) {
-		right();
-		state = f;
-	}
-	else if (read(blank)) {
-		left();
-		left();
-		state = p;
+	switch (read()) {
+    case 'x':
+		  write(blank);
+		  right();
+		  state = q;
+	    break;
+    case 'e':
+		  right();
+		  state = f;
+	    break;
+    case blank:
+      left();
+		  left();
+		  state = p;
+      break;
 	}
 }
 
 // State f.
 function f() {
-	if (read(blank)) {
-		write('0');
-		left();
-		left();
-		state = o;
-	}
-	else {
-		right();
-		right();
-		state = f;
+	switch (read()) {
+    case blank:
+		  write('0');
+		  left();
+		  left();
+		  state = o;
+	    break;
+    default:
+      right();
+		  right();
+		  state = f;
+      break;
 	}
 }
 
