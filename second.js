@@ -13,7 +13,7 @@ function write(sym) {
 	tape[pos] = sym;
 }
 
-// Read the symbol under the macgine head.
+// Read the symbol under the machine head.
 function read() {
 	return tape[pos];
 }
@@ -127,7 +127,7 @@ function tapestr() {
 // Print the initial tape string.
 console.log(tapestr());
 // Run the machine through a number of state table lookups.
-for (var i = 0; i < 300; i++) {
+for (var i = 0; i < 30; i++) {
 	// Apply the transition function for the current state and symbol.
 	state();
 	// Print the tape string.

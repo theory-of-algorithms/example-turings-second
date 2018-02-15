@@ -1,0 +1,15 @@
+{
+  "version": "0.1.0"
+  ,"_runner": "terminal"
+  , "tasks": [
+    {
+      "taskName": "Compile",
+      "command": "node",
+      "isShellCommand": true,
+      "isBuildCommand": true,
+      "showOutput": "always",
+      "args": ["${relativeFile}"],
+      //"presentation": {"panel": "new"},
+    }
+  ]
+}
